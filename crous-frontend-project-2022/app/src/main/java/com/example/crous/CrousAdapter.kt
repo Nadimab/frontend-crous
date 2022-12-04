@@ -2,7 +2,9 @@ package com.example.crous
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.scaleMatrix
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 
 class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Adapter<CrousViewHolder>() {
@@ -21,6 +23,7 @@ class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Ad
         holder.type.text = crous.type
         holder.address.text = crous.address
         holder.description.text = crous.shortDesc
+        val img = Picasso.get().load(crous.photoURL).error(R.drawable.logo_default).resize(300,300).into(holder.imageURL)
     }
 
     override fun getItemCount(): Int {

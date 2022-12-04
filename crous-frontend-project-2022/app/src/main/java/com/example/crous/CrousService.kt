@@ -8,13 +8,22 @@ interface CrousService {
     fun getCat(@Body crous: ExpandedCrous): Call<ExpandedCrous>;
 
     @GET("crous/")
-    fun findAll(@Query("page") page: Int,
+    fun findMapsData(@Query("page") page: Int,
                 @Query("rows") rows: Int,
                 @Query("offset") offset: Int,
                 @Query("sortBy") sortBy: String,
                 @Query("fav") favorites: Int,
                 @Query("geoloc") geoloc: Int,
     ):Call<List<MapsData>>;
+
+    @GET("crous/")
+    fun findAll(@Query("page") page: Int,
+                @Query("rows") rows: Int,
+                @Query("offset") offset: Int,
+                @Query("sortBy") sortBy: String,
+                @Query("fav") favorites: Int,
+                @Query("geoloc") geoloc: Int,
+    ):Call<ReducedResponse>;
 
     @GET("crous/{id}")
     fun findOneById(@Path("id") id: String);
