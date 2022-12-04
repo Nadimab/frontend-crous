@@ -17,12 +17,12 @@ class CrousCatalogue {
         return crousMap.getValue(key.toString())
     }
 
-    fun getAllCrous(): List<ReducedCrous> {
-        return crousMap.values.sortedBy { it.address }
+    fun getAllCrous(): ArrayList<ReducedCrous> {
+        return ArrayList(crousMap.values.sortedBy { it.title })
     }
 
     /*
-    fun getCrousFromType(type: String): List<`reduced-crous`> { // this fuction can return all the crous coming from the type or the zone
+    fun getCrousFromType(type: String): List<ReducedCrous> { // this fuction can return all the crous coming from the type or the zone
         return crousMap.filterValues { it.type.equals(type, ignoreCase = true) }
             .values
             .sortedBy { it.address }

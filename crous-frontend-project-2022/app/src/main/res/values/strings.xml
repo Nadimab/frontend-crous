@@ -3,4 +3,6 @@
     <string name="text_tab_left">home</string>
     <string name="text_tab_center">Map</string>
     <string name="text_tab_right">App Info</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
