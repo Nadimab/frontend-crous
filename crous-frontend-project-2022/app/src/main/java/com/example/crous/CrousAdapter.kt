@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 
-class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Adapter<CrousViewHolder>()  {
+class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Adapter<CrousViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrousViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(

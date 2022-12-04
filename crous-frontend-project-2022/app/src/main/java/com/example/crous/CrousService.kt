@@ -14,7 +14,7 @@ interface CrousService {
                 @Query("sortBy") sortBy: String,
                 @Query("fav") favorites: Int,
                 @Query("geoloc") geoloc: Int,
-    );
+    ):Call<List<MapsData>>;
 
     @GET("crous/{id}")
     fun findOneById(@Path("id") id: String);
