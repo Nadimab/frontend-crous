@@ -2,20 +2,22 @@ package com.example.crous
 
 class CrousCatalogue {
     private val crousMap: HashMap<String, ReducedCrous> = HashMap()
-    private val crousMapFavorite: HashMap<String, ReducedCrous> = HashMap()
 
     fun addCrous(crous: ReducedCrous) {
         crousMap[crous.title] = crous
     }
 
+    /*
     fun getCrousFromTitle(title: String):ReducedCrous {
         return crousMap[title] ?: throw java.lang.RuntimeException("No crous with title: $title")
     }
-
+     */
+    /*
     fun findCrousById(Id: String): ReducedCrous? {
         val key= crousMap.filterValues { it.id == Id }.keys
         return crousMap.getValue(key.toString())
     }
+     */
 
     fun getAllCrous(): ArrayList<ReducedCrous> {
         return ArrayList(crousMap.values.sortedBy { it.title })
@@ -29,6 +31,7 @@ class CrousCatalogue {
             .toList()
     }
      */
+    /*
     fun toggleFavorite(Id: String){
         if (crousMapFavorite[Id] != null) {
             crousMapFavorite.remove(Id)
@@ -39,9 +42,13 @@ class CrousCatalogue {
         }
     }
 
+     */
+    /*
     fun getTotalNumberOfCrous(): Int {
         return crousMap.size
     }
+
+     */
 
     fun clean() {
         crousMap.clear()

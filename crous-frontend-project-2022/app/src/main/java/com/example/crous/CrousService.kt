@@ -1,5 +1,6 @@
 package com.example.crous
 
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -23,13 +24,15 @@ interface CrousService {
                 @Query("sortBy") sortBy: String,
                 @Query("fav") favorites: Int,
                 @Query("geoloc") geoloc: Int,
+                @Query("refresh") refresh: Int,
     ):Call<ReducedResponse>;
 
     @GET("crous/{id}")
-    fun findOneById(@Path("id") id: String);
+    fun findOneById(@Path("id") id: String) : Call<ExpandedCrous>;
 
-    @POST("/search/title")
-    fun searchByTitle(@Body title: String);
+    @FormUrlEncoded
+    @POST("crous/search/title")
+    fun searchByTitle(@Field("title") title:String): Call<ArrayList<ReducedCrous>>;
 
     @PUT("crous/{id}")
     fun toggleFavorite(@Path("id") id: String);

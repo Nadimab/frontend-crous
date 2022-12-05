@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AppInfoFragment">
+    tools:context=".FavoriteFragment">
 
-    <TextView
-        android:id="@+id/textView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_favorite"
         android:layout_width="match_parent"
-        android:layout_height="132dp"
-        android:text="This application helps you to find all the crous in France." />
+        android:layout_height="match_parent" />
 </FrameLayout>

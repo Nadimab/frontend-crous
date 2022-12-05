@@ -2,29 +2,26 @@ package com.example.crous
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.FrameLayout
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
+lateinit var crousService: CrousService
 class MainActivity : AppCompatActivity() {
 
     private val crousCatalogue = CrousCatalogue()
     var tabLayout: TabLayout? = null
     lateinit var retrofit: Retrofit
-    lateinit var crousService: CrousService
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,7 +33,6 @@ class MainActivity : AppCompatActivity() {
 
         crousService = retrofit.create(CrousService::class.java)
 
-        //displayCrousListFragment()
         readDataFromServer()
         tabLayout = findViewById<TabLayout>(R.id.a_main_tabs)
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -45,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                 when (tab.position) {
                     0 -> displayCrousListFragment()
                     1 -> displayMapFragment()
-                    2 -> displayInfoFragment()
+                    2 -> displayFavFragment()
                 }
             }
 
@@ -67,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun readDataFromServer(){
         var allData: ReducedResponse?
         crousCatalogue.clean()
-        crousService.findAll(0,10,0,"title",0,0).enqueue(object : Callback<ReducedResponse> {
+        crousService.findAll(0,10,0,"title",0,0,0).enqueue(object : Callback<ReducedResponse> {
             override fun onResponse(
                 call: Call<ReducedResponse>,
                 response: Response<ReducedResponse>
@@ -102,10 +98,90 @@ class MainActivity : AppCompatActivity() {
                 }
         })
     }
-    private fun displayInfoFragment() {
-        val infoFragment = AppInfoFragment.newInstance()
+    private fun displayFavFragment() {
+        val favFragment = FavoriteFragment.newInstance()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.a_main_frame_layout,infoFragment)
+            .replace(R.id.a_main_frame_layout,favFragment)
             .commit()
     }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu, menu)
+        val searchItem = menu?.findItem(R.id.menu_search)
+        //searchItem?.expandActionView()
+
+        if (searchItem!=null) {
+            val searchView = searchItem.actionView as SearchView
+
+            searchView.queryHint = "Search"
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    var allData: ArrayList<ReducedCrous>?
+                    crousCatalogue.clean()
+                    crousService.searchByTitle(query).enqueue(object : Callback<ArrayList<ReducedCrous>> {
+                        override fun onResponse(
+                            call: Call<ArrayList<ReducedCrous>>,
+                            response: Response<ArrayList<ReducedCrous>>
+                        ) {
+                            allData = ArrayList(response.body())
+                            allData?.forEach{crousCatalogue.addCrous(it)}
+                            displayCrousListFragment()
+                        }
+                        override fun onFailure(call: Call<ArrayList<ReducedCrous>>, t: Throwable) {
+                            Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    var allData: ArrayList<ReducedCrous>?
+                    crousCatalogue.clean()
+                    crousService.searchByTitle(newText).enqueue(object : Callback<ArrayList<ReducedCrous>> {
+                        override fun onResponse(
+                            call: Call<ArrayList<ReducedCrous>>,
+                            response: Response<ArrayList<ReducedCrous>>
+                        ) {
+                            allData = ArrayList(response.body())
+                            allData?.forEach{crousCatalogue.addCrous(it)}
+                            displayCrousListFragment()
+                        }
+                        override fun onFailure(call: Call<ArrayList<ReducedCrous>>, t: Throwable) {
+                            Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                    return true
+                }
+            })
+        }
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_refresh -> {
+                var allData: ReducedResponse?
+                crousCatalogue.clean()
+                crousService.findAll(0,10,0,"title",0,0,1).enqueue(object : Callback<ReducedResponse> {
+                    override fun onResponse(
+                        call: Call<ReducedResponse>,
+                        response: Response<ReducedResponse>
+                    ) {
+                        allData = response.body()
+                        allData?.returnData?.forEach{crousCatalogue.addCrous(it)}
+                        displayCrousListFragment()
+                    }
+                    override fun onFailure(call: Call<ReducedResponse>, t: Throwable) {
+                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 }

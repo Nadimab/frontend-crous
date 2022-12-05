@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +17,13 @@
         android:theme="@style/Theme.Crous"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -29,7 +37,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCClIWoomC-kcxtOmzfzzwxOeiKFmfUT2c"/>
+            android:value="AIzaSyCClIWoomC-kcxtOmzfzzwxOeiKFmfUT2c" />
 
         <activity
             android:name=".MainActivity"
