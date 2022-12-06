@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">crous</string>
+    <string name="app_name">Crous</string>
     <string name="text_tab_left">home</string>
     <string name="text_tab_center">Map</string>
     <string name="text_tab_right">Favorites</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="SERVER_BASE_URL">http://192.168.186.47:3000/</string>
+    <string name="SERVER_BASE_URL">https://app-4c20f9c0-4d1b-44ca-896f-6d3d4ec13a6a.cleverapps.io/</string>
 </resources>
