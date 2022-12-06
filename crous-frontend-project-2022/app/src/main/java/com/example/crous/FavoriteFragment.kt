@@ -14,9 +14,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class FavoriteFragment : Fragment() {
     private lateinit var crousAdapter: CrousAdapter
     private lateinit var rcvCrous: RecyclerView
+    private var crous: ArrayList<ReducedCrous> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            crous = it.getSerializable(CROUS) as ArrayList<ReducedCrous>
+        }
     }
 
     override fun onCreateView(
@@ -24,10 +28,27 @@ class FavoriteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return  inflater.inflate(R.layout.fragment_favorite, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_favorite, container, false)
+
+        // btnAddFav = view?.findViewById(R.id.row_crous_imgbtn)
+        //title = view?.findViewById(R.id.row_crous_txttitle)
+        crousAdapter = CrousAdapter(crous)
+
+        rcvCrous = rootView.findViewById(R.id.rcv_favorite)
+        rcvCrous.adapter = crousAdapter
+
+        val linearLayoutManager = LinearLayoutManager(context)
+        rcvCrous.layoutManager = linearLayoutManager
+
+        return rootView
     }
     companion object {
         @JvmStatic
-        fun newInstance() = CrousFragment()
+        fun newInstance(data: ArrayList<ReducedCrous>) =
+            FavoriteFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(CROUS, data)
+                }
+            }
     }
 }

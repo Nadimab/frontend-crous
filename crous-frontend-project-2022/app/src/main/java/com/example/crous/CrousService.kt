@@ -1,6 +1,7 @@
 package com.example.crous
 
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -35,7 +36,7 @@ interface CrousService {
     fun searchByTitle(@Field("title") title:String): Call<ArrayList<ReducedCrous>>;
 
     @PUT("crous/{id}")
-    fun toggleFavorite(@Path("id") id: String);
+    fun toggleFavorite(@Path("id") id: String): Call<JSONObject>;
 
     @PATCH("/{id}")
     fun update(@Path("id") id: String, @Body updateCrousDto: ExpandedCrous);

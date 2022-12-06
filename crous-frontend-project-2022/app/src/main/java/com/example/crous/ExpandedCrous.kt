@@ -14,4 +14,5 @@ class ExpandedCrous (
     val info: String,
     val closing: Number,
     val photoURL: String,
+    val favorite: Boolean,
 ):java.io.Serializable

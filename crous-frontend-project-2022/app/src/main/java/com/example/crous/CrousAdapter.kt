@@ -13,6 +13,7 @@ import androidx.core.graphics.scaleMatrix
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,23 @@ class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Ad
         holder.type.text = crous.type
         holder.address.text = crous.address
         holder.description.text = crous.shortDesc
+        holder.fav.isChecked=crous.favorite
+        holder.fav.setOnCheckedChangeListener { buttonView, isChecked ->
+            val crousreduced = crousList.find { it.title.lowercase() == holder.title.text.toString().lowercase() }
+            if (crousreduced != null) {
+                crousService.toggleFavorite(crousreduced.id).enqueue(object : Callback<JSONObject>{
+                    override fun onResponse(call: Call<JSONObject>, response: Response<JSONObject>) {
+                    }
+
+                    override fun onFailure(call: Call<JSONObject>, t: Throwable) {
+                        Toast.makeText(holder.btn.context, t.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+            }
+        }
+
+
         val img = Picasso.get().load(crous.photoURL).error(R.drawable.logo_default).resize(300,300).into(holder.imageURL)
         holder.btn.setOnClickListener {
             var allData: ExpandedCrous?

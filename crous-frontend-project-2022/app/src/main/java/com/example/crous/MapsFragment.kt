@@ -32,8 +32,6 @@ import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import java.util.*
 
 
-private const val CROUS = "crous"
-
 class MapsFragment : Fragment() {
     private var userLatitude: Double = 0.0
     private var userLongitude: Double = 0.0

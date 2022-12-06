@@ -17,7 +17,7 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val CROUS = "crous"
+ const val CROUS = "crous"
 
 class CrousFragment: Fragment() {
     private lateinit var crousAdapter: CrousAdapter

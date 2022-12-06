@@ -6,8 +6,6 @@ class ReducedCrous (
     val title: String,
     val shortDesc: String,
     val address: String,
-    val phoneNumber: String,
-    val email: String,
-    val closing: Number,
     val photoURL: String,
+    val favorite : Boolean,
 ): java.io.Serializable
