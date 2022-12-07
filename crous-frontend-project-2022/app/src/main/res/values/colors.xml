@@ -3,8 +3,8 @@
     <color name="red_200">#FF8181</color>
     <color name="red_500">#FE4343</color>
     <color name="red_700">#FE0202</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="teal_200">#FE4343</color>
+    <color name="teal_700">#FE4343</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.crous
 
+import CircleTransform
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -52,9 +53,10 @@ class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Ad
         }
 
 
-        val img = Picasso.get().load(crous.photoURL).error(R.drawable.logo_default).resize(300,300).into(holder.imageURL)
+        val img = Picasso.get().load(crous.photoURL).error(R.drawable.logo_default).transform(CircleTransform()).resize(300,300).into(holder.imageURL)
         holder.btn.setOnClickListener {
             var allData: ExpandedCrous?
+
             val crousreduced = crousList.find { it.title.lowercase() == holder.title.text.toString().lowercase() }
             if (crousreduced != null) {
                 crousService.findOneById(crousreduced.id).enqueue(object : Callback<ExpandedCrous> {

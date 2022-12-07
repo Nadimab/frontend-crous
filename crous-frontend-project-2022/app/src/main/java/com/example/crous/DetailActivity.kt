@@ -1,7 +1,9 @@
 package com.example.crous
 
+import CircleTransform
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.common.server.converter.StringToIntConverter
@@ -33,7 +35,7 @@ class DetailActivity : AppCompatActivity() {
         closing = findViewById<TextView>(R.id.detail_closing)
         Info = findViewById<TextView>(R.id.detail_info)
 
-        Picasso.get().load(data.photoURL).error(R.drawable.logo_default).resize(300,300).into(img)
+        Picasso.get().load(data.photoURL).error(R.drawable.logo_default).transform(CircleTransform()).resize(300,300).into(img)
         title.setText(data.title).toString()
         address.setText(data.address).toString()
         number.setText(data.phoneNumber).toString()
@@ -67,7 +69,18 @@ class DetailActivity : AppCompatActivity() {
             number.setText("Number not available".toString())
         }
 
-
+        var actionBar = getSupportActionBar()
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+        }
     }
-
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onContextItemSelected(item)
+    }
 }
