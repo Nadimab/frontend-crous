@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayout
 import retrofit2.Call
@@ -21,15 +18,20 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var next_btn: Button
     lateinit var back_btn: Button
+
     var menu_item_search: MenuItem? = null
     var menu_item_reload: MenuItem? = null
+
     lateinit var first: TextView
     lateinit var current: TextView
     lateinit var last: TextView
 
+    var tabLayout: TabLayout? = null
+
+    var sortBy: String = "type"
+    private var dropDownLabels = arrayOf( "title", "address", "type")
     var counter: Int = 0;
     private val crousCatalogue = CrousCatalogue()
-    var tabLayout: TabLayout? = null
     lateinit var retrofit: Retrofit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,14 +45,68 @@ class MainActivity : AppCompatActivity() {
 
         crousService = retrofit.create(CrousService::class.java)
 
-        //readDataFromServer()
+//        initSpinner()
+        initTabs()
+        initButtons()
+        initPaginationView()
+        readDataFromServer(counter, sortBy,0)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        var m: Menu? = initMenu(menu)
+        initSearch(m)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_refresh -> {
+                readDataFromServer(counter,sortBy,1)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+//    private fun initSpinner(){
+//        val spinner: Spinner = findViewById(R.id.ddl_sortBy)
+//        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+//            this,
+//            android.R.layout.simple_spinner_item, dropDownLabels
+//        )
+//        spinner.adapter = adapter
+//
+//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onNothingSelected(parent: AdapterView<*>?) {}
+//            override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+//                when (pos) {
+//                    1 -> {
+//                        sortBy = "title"
+//                        readDataFromServer(counter, sortBy,0)
+//                    }
+//                    2 -> {
+//                        sortBy = "address"
+//                        readDataFromServer(counter, sortBy,0)
+//                    }
+//                    3 -> {
+//                        sortBy = "type"
+//                        readDataFromServer(counter, sortBy,0)
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    private fun initTabs(){
         tabLayout = findViewById<TabLayout>(R.id.a_main_tabs)
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 // creating cases for fragment
                 when (tab.position) {
-                    0 -> readDataFromServer(counter)
-                    1 -> readMapFromServer()
+                    0 -> readDataFromServer(counter,sortBy,0)
+                    1 -> readMapDataFromServer()
                     2 -> readFavFromServer()
                 }
             }
@@ -61,41 +117,44 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab) {
             }
         })
+    }
+
+    private fun initButtons(){
         next_btn = findViewById<Button>(R.id.button_next)
         back_btn = findViewById<Button>(R.id.button_back)
-        first = findViewById<TextView>(R.id.first_page)
-        current = findViewById<TextView>(R.id.current_page)
-        last = findViewById<TextView>(R.id.last_page)
-
-        readDataFromServer(counter)
         back_btn.isEnabled = false
         next_btn.setOnClickListener{
             counter++
             back_btn.isEnabled = true
-            readDataFromServer(counter)
+            readDataFromServer(counter,sortBy,0)
         }
         back_btn.setOnClickListener{
             counter--
             back_btn.isEnabled = counter != 0
-            readDataFromServer(counter)
+            readDataFromServer(counter,sortBy, 0)
         }
-
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //super.onCreateOptionsMenu(menu)
+    private fun initPaginationView(){
+        first = findViewById<TextView>(R.id.first_page)
+        current = findViewById<TextView>(R.id.current_page)
+        last = findViewById<TextView>(R.id.last_page)
+    }
+
+    private fun initMenu(menu: Menu?): Menu?{
         menuInflater.inflate(R.menu.menu, menu)
         if (menu != null) {
             menu_item_search = menu.getItem(0)
             menu_item_reload = menu.getItem(1)
         };
 
+        return menu
+    }
+
+    private fun initSearch(menu: Menu?){
         val searchItem = menu?.findItem(R.id.menu_search)
         //searchItem?.expandActionView()
-
-        if (searchItem!=null) {
-            val searchView = searchItem.actionView as SearchView
-
+        val searchView = searchItem?.actionView as SearchView
             searchView.queryHint = "Search"
 
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -137,29 +196,14 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
             })
-        }
-
-        return super.onCreateOptionsMenu(menu)
     }
 
-    private fun displayCrousListFragment() {
-        val crous = CrousFragment.newInstance(crousCatalogue.getAllCrous())
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.a_main_frame_layout, crous)
-            .commit()
-        back_btn.visibility = View.VISIBLE
-        next_btn.visibility = View.VISIBLE
-        first.visibility = View.VISIBLE
-        current.visibility = View.VISIBLE
-        last.visibility = View.VISIBLE
-    }
-
-    private fun readDataFromServer(counter: Int){
+    private fun readDataFromServer(counter: Int, sortby: String, refresh: Int){
         menu_item_search?.let{it.isVisible = true}
         menu_item_reload?.let{it.isVisible = true}
         var allData: ReducedResponse?
         crousCatalogue.clean()
-        crousService.findAll(counter,10,0,"title",0,0,0).enqueue(object : Callback<ReducedResponse> {
+        crousService.findAll(counter,10,0,sortby,0,0,refresh).enqueue(object : Callback<ReducedResponse> {
             override fun onResponse(
                 call: Call<ReducedResponse>,
                 response: Response<ReducedResponse>
@@ -196,7 +240,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-    private fun readMapFromServer(){
+
+    private fun readMapDataFromServer(){
         menu_item_search?.let{it.isVisible = false}
         menu_item_reload?.let{it.isVisible = false}
         var allMapsData: List<MapsData>? = listOf()
@@ -214,16 +259,22 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun displayCrousListFragment() {
+        val crous = CrousFragment.newInstance(crousCatalogue.getAllCrous())
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.a_main_frame_layout, crous)
+            .commit()
+
+        setPaginationViewState(View.VISIBLE)
+    }
+
     private fun displayMapFragment(allMapsData:List<MapsData>) {
         val mapFragment = MapsFragment.newInstance(ArrayList(allMapsData))
         supportFragmentManager.beginTransaction()
             .replace(R.id.a_main_frame_layout, mapFragment)
             .commit()
-        back_btn.visibility = View.GONE
-        next_btn.visibility = View.GONE
-        first.visibility = View.GONE
-        current.visibility = View.GONE
-        last.visibility = View.GONE
+
+        setPaginationViewState(View.GONE)
     }
 
     private fun displayFavFragment(data: ArrayList<ReducedCrous>) {
@@ -232,37 +283,14 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.a_main_frame_layout,favFragment)
             .commit()
 
-        back_btn.visibility = View.GONE
-        next_btn.visibility = View.GONE
-        first.visibility = View.GONE
-        current.visibility = View.GONE
-        last.visibility = View.GONE
-
+        setPaginationViewState(View.GONE)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_refresh -> {
-                var allData: ReducedResponse?
-                crousCatalogue.clean()
-                crousService.findAll(counter,10,0,"title",0,0,1).enqueue(object : Callback<ReducedResponse> {
-                    override fun onResponse(
-                        call: Call<ReducedResponse>,
-                        response: Response<ReducedResponse>
-                    ) {
-                        allData = response.body()
-                        allData?.returnData?.forEach{crousCatalogue.addCrous(it)}
-                        displayCrousListFragment()
-                    }
-                    override fun onFailure(call: Call<ReducedResponse>, t: Throwable) {
-                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
-                    }
-                })
-
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
+    fun setPaginationViewState(state: Int){
+        back_btn.visibility = state
+        next_btn.visibility = state
+        first.visibility = state
+        current.visibility = state
+        last.visibility = state
     }
-
 }

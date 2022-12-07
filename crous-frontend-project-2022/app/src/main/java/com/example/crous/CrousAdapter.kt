@@ -52,7 +52,6 @@ class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Ad
             }
         }
 
-
         val img = Picasso.get().load(crous.photoURL).error(R.drawable.logo_default).transform(CircleTransform()).resize(300,300).into(holder.imageURL)
         holder.btn.setOnClickListener {
             var allData: ExpandedCrous?
@@ -76,9 +75,7 @@ class CrousAdapter(private var crousList : List<ReducedCrous>) : RecyclerView.Ad
                     }
                 })
             }
-
         }
-
     }
 
     override fun getItemCount(): Int {

@@ -19,6 +19,7 @@
             android:id="@+id/a_main_tab_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/ic_baseline_home_24"
             android:text="@string/text_tab_left"
             tools:layout_editor_absoluteX="1dp"
             tools:layout_editor_absoluteY="51dp" />
@@ -27,6 +28,7 @@
             android:id="@+id/a_main_tab_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/ic_baseline_map_24"
             android:text="@string/text_tab_center"
             tools:layout_editor_absoluteX="138dp"
             tools:layout_editor_absoluteY="51dp" />
@@ -35,6 +37,7 @@
             android:id="@+id/a_main_tab_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/ic_baseline_favorite_24"
             android:text="@string/text_tab_right"
             tools:layout_editor_absoluteX="274dp"
             tools:layout_editor_absoluteY="-1dp" />
@@ -104,5 +107,23 @@
         app:layout_constraintEnd_toStartOf="@+id/button_next"
         app:layout_constraintStart_toEndOf="@+id/button_back"
         app:layout_constraintTop_toTopOf="@+id/current_page" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/label_sortBy"-->
+<!--        android:layout_width="204dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Sort by"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="24sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/a_main_tabs" />-->
+
+<!--    <Spinner-->
+<!--        android:id="@+id/ddl_sortBy"-->
+<!--        android:layout_width="204dp"-->
+<!--        android:layout_height="36dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/label_sortBy"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/a_main_tabs" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
